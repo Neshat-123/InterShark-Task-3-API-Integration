@@ -1,142 +1,109 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="description"
-        content="GitHub Explorer - Discover GitHub developers, profiles, and repositories using the GitHub REST API."
-    >
-
-    <meta name="author" content="Neshat">
-
-    <title>GitHub Explorer | Discover Developers</title>
+    <title>GitHub Explorer</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-   
-    <header class="site-header">
-
-        <div class="container header-content">
-
-            <!-- Brand -->
-            <a href="#" class="brand" aria-label="GitHub Explorer Home">
-
-                <span class="brand-icon" aria-hidden="true">
-                    ◉
-                </span>
-
-                <span class="brand-name">
-                    GitHub Explorer
-                </span>
-
-            </a>
-
-            <div class="api-status" aria-label="API connection status">
-
-                <span class="status-dot" aria-hidden="true"></span>
-
-                <span>
-                    GitHub API
-                </span>
-
-            </div>
-
+    <header class="header">
+        <div class="container">
+            <h1>GitHub Explorer</h1>
+            <p>Explore GitHub profiles and repositories</p>
         </div>
-
     </header>
 
 
-    <main>
+    <main class="container">
 
-        <section class="hero-section">
+        <!-- Search Section -->
+        <section class="search-section">
 
-            <div class="container hero-content">
+            <h2>Find a GitHub User</h2>
 
-                <span class="eyebrow">
-                    DEVELOPER DISCOVERY
-                </span>
+            <form id="searchForm">
 
-                <h1>
-                    Explore GitHub
-                    <span>Developers.</span>
-                </h1>
-
-                <p class="hero-description">
-                    Search GitHub profiles, discover repositories,
-                    and explore developer activity using real-time
-                    public API data.
-                </p>
-
-
-          
-                <form
-                    id="search-form"
-                    class="search-form"
+                <input
+                    type="text"
+                    id="usernameInput"
+                    placeholder="Enter GitHub username"
                     autocomplete="off"
+                    required
                 >
 
-                    <label
-                        for="username-input"
-                        class="sr-only"
-                    >
-                        Enter GitHub username
-                    </label>
+                <button type="submit">
+                    Search
+                </button>
 
-                    <div class="search-input-wrapper">
+            </form>
 
-                        <span
-                            class="search-icon"
-                            aria-hidden="true"
-                        >
-                            🔍
-                        </span>
+        </section>
 
-                        <input
-                            type="search"
-                            id="username-input"
-                            name="username"
-                            placeholder="Enter a GitHub username..."
-                            maxlength="39"
-                            spellcheck="false"
-                            required
-                        >
+
+        <!-- Loading Message -->
+        <div id="loading" class="loading" hidden>
+            <p>Loading GitHub data...</p>
+        </div>
+
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message" hidden>
+            <p id="errorText"></p>
+        </div>
+
+
+        <!-- Profile Section -->
+        <section id="profileSection" class="profile-section" hidden>
+
+            <div class="profile-card">
+
+                <img
+                    id="profileImage"
+                    src=""
+                    alt="GitHub profile"
+                >
+
+                <div class="profile-info">
+
+                    <h2 id="profileName"></h2>
+
+                    <p id="profileUsername"></p>
+
+                    <p id="profileBio"></p>
+
+                    <div class="profile-stats">
+
+                        <div>
+                            <strong id="followers"></strong>
+                            <span>Followers</span>
+                        </div>
+
+                        <div>
+                            <strong id="following"></strong>
+                            <span>Following</span>
+                        </div>
+
+                        <div>
+                            <strong id="repositoryCount"></strong>
+                            <span>Repositories</span>
+                        </div>
 
                     </div>
 
-                    <button
-                        type="submit"
-                        id="search-button"
-                        class="search-button"
+                    <a
+                        id="profileLink"
+                        href="#"
+                        target="_blank"
+                        rel="noopener noreferrer"
                     >
-                        Search
-                    </button>
-
-                </form>
-
-
-                <div
-                    id="recent-searches"
-                    class="recent-searches"
-                    aria-label="Recent searches"
-                >
-
-                    <span class="recent-label">
-                        Recent searches
-                    </span>
-
-                    <div
-                        id="recent-search-list"
-                        class="recent-search-list"
-                    >
-                    </div>
+                        View GitHub Profile
+                    </a>
 
                 </div>
 
@@ -145,358 +112,37 @@
         </section>
 
 
+        <!-- Repository Section -->
+        <section id="repositorySection" class="repository-section" hidden>
 
-        <section class="results-section">
+            <div class="repository-header">
 
-            <div class="container">
-
-
-          
-                 
-                <div
-                    id="empty-state"
-                    class="state empty-state"
-                >
-
-                    <div class="state-icon" aria-hidden="true">
-                        ◌
-                    </div>
-
-                    <h2>
-                        Discover a GitHub developer
-                    </h2>
-
-                    <p>
-                        Enter a GitHub username above to view
-                        their profile and public repositories.
-                    </p>
-
+                <div>
+                    <h2>Repositories</h2>
+                    <p id="repositoryTotal"></p>
                 </div>
 
-
-                
-                <div
-                    id="loading-state"
-                    class="state loading-state"
-                    hidden
-                    aria-live="polite"
+                <input
+                    type="text"
+                    id="repositorySearch"
+                    placeholder="Search repositories..."
+                    autocomplete="off"
                 >
 
-                    <div class="loading-spinner" aria-hidden="true"></div>
+            </div>
 
-                    <h2>
-                        Fetching profile...
-                    </h2>
 
-                    <p>
-                        Connecting to the GitHub API.
-                    </p>
+            <!-- Repository Cards -->
+            <div
+                id="repositoryList"
+                class="repository-list"
+            >
+            </div>
 
-                    </div>
-                <div
-                    id="error-state"
-                    class="state error-state"
-                    hidden
-                    role="alert"
-                >
 
-                    <div class="state-icon" aria-hidden="true">
-                        !
-                    </div>
-
-                    <h2 id="error-title">
-                        Something went wrong
-                    </h2>
-
-                    <p id="error-message">
-                        We couldn't retrieve the requested profile.
-                    </p>
-
-                    <button
-                        type="button"
-                        id="retry-button"
-                        class="secondary-button"
-                    >
-                        Try Again
-                    </button>
-
-                </div>
-
-                <div
-                    id="profile-result"
-                    class="profile-result"
-                    hidden
-                >
-
-                    <article class="profile-card">
-
-                        <div class="profile-main">
-
-                            <img
-                                id="profile-avatar"
-                                class="profile-avatar"
-                                src=""
-                                alt="GitHub profile avatar"
-                            >
-
-                            <div class="profile-info">
-
-                                <p
-                                    id="profile-username"
-                                    class="profile-username"
-                                >
-                                    @username
-                                </p>
-
-                                <h2 id="profile-name">
-                                    Developer Name
-                                </h2>
-
-                                <p
-                                    id="profile-bio"
-                                    class="profile-bio"
-                                >
-                                    Developer biography
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <a
-                            id="profile-link"
-                            class="profile-link"
-                            href="#"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            View GitHub Profile
-                            <span aria-hidden="true">↗</span>
-                        </a>
-
-                    </article>
-
-
-                    <section
-                        class="stats-grid"
-                        aria-label="GitHub statistics"
-                    >
-
-                        <article class="stat-card">
-
-                            <span class="stat-label">
-                                Repositories
-                            </span>
-
-                            <strong
-                                id="repo-count"
-                                class="stat-value"
-                            >
-                                0
-                            </strong>
-
-                        </article>
-
-
-                        <article class="stat-card">
-
-                            <span class="stat-label">
-                                Followers
-                            </span>
-
-                            <strong
-                                id="followers-count"
-                                class="stat-value"
-                            >
-                                0
-                            </strong>
-
-                        </article>
-
-
-                        <article class="stat-card">
-
-                            <span class="stat-label">
-                                Following
-                            </span>
-
-                            <strong
-                                id="following-count"
-                                class="stat-value"
-                            >
-                                0
-                            </strong>
-
-                        </article>
-
-                    </section>
-
-
-                    <section
-                        class="details-card"
-                        aria-label="Profile details"
-                    >
-
-                        <div class="detail-item">
-
-                            <span class="detail-icon" aria-hidden="true">
-                                📍
-                            </span>
-
-                            <div>
-
-                                <span class="detail-label">
-                                    Location
-                                </span>
-
-                                <p id="profile-location">
-                                    Not available
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <span class="detail-icon" aria-hidden="true">
-                                🏢
-                            </span>
-
-                            <div>
-
-                                <span class="detail-label">
-                                    Company
-                                </span>
-
-                                <p id="profile-company">
-                                    Not available
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <span class="detail-icon" aria-hidden="true">
-                                🔗
-                            </span>
-
-                            <div>
-
-                                <span class="detail-label">
-                                    Website
-                                </span>
-
-                                <p>
-
-                                    <a
-                                        id="profile-website"
-                                        href="#"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        Not available
-                                    </a>
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="detail-item">
-
-                            <span class="detail-icon" aria-hidden="true">
-                                📅
-                            </span>
-
-                            <div>
-
-                                <span class="detail-label">
-                                    Joined GitHub
-                                </span>
-
-                                <p id="profile-joined">
-                                    Not available
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </section>
-
-
-                    <section class="repositories-section">
-
-                        <div class="section-heading">
-
-                            <div>
-
-                                <span class="eyebrow">
-                                    OPEN SOURCE
-                                </span>
-
-                                <h2>
-                                    Public Repositories
-                                </h2>
-
-                            </div>
-
-                            <span
-                                id="repository-total"
-                                class="repository-total"
-                            >
-                                0 repositories
-                            </span>
-
-                        </div>
-
-
-                        <div
-                            id="repository-list"
-                            class="repository-grid"
-                        >
-                            
-                        </div>
-
-                        <div
-                            id="repository-loading"
-                            class="repository-loading"
-                            hidden
-                        >
-                            Loading repositories...
-                        </div>
-
-
-                   
-                        <div
-                            id="no-repositories"
-                            class="no-repositories"
-                            hidden
-                        >
-
-                            <h3>
-                                No public repositories
-                            </h3>
-
-                            <p>
-                                This developer doesn't currently
-                                have any public repositories.
-                            </p>
-
-                        </div>
-
-                    </section>
-
-                </div>
-
+            <!-- No Repository Result -->
+            <div id="noRepositories" hidden>
+                <p>No repositories found.</p>
             </div>
 
         </section>
@@ -504,26 +150,16 @@
     </main>
 
 
-    <footer class="site-footer">
+    <footer class="footer">
 
-        <div class="container footer-content">
-
-            <p>
-                GitHub Explorer
-                <span aria-hidden="true">•</span>
-                Built with HTML, CSS, JavaScript &amp; GitHub REST API
-            </p>
-
-            <p>
-                API Integration Project
-            </p>
-
-        </div>
+        <p>
+            GitHub Explorer &copy; 2026
+        </p>
 
     </footer>
 
-    <script src="script.js" defer></script>
+
+    <script src="script.js"></script>
+
 </body>
-
 </html>
-
